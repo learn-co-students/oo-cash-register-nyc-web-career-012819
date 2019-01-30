@@ -1,4 +1,3 @@
-
 require 'pry'
 
 class CashRegister
@@ -12,26 +11,38 @@ class CashRegister
 	end
 
 	def add_item(item, price, quantity = 1)
+		# Save transaction details in a hash and push to the items array
 		@items.push({item => {
 			:price => price,
 			:quantity => quantity
 		}})
+
+		# Update total
 		@total += price * quantity
 	end
 
 	def items
 		output = []
+
+		# Build array with just the item names
 		@items.each do |element|
 			element.values[0][:quantity].times do
 				output << element.keys[0]
 			end
 		end
+
 		output
 	end
 
 	def void_last_transaction
-		last_transaction_details = @items[-1].values[0]
-		@total -= last_transaction_details[:price] * last_transaction_details[:quantity]
+		# The last item should be the last element in the @items array. Only grab its hash values.
+		last_item = @items[-1].values[0]
+
+		# Update total
+		# E.g. If 10 tomatoes were added at $5 each, we need to decrement by $50
+		@total -= last_item[:price] * last_item[:quantity]
+
+		# Pop the items array to remove the last transaction
 		@items.pop
 	end
 
